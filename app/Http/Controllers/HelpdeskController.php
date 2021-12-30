@@ -22,6 +22,7 @@ use Intervention\Image\ImageManager;
 use DNS2D;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\FileUpload\InputFile;
+use App\Imports\ImportPelanggan;
 
 class HelpdeskController extends Controller
 {
@@ -33,6 +34,7 @@ class HelpdeskController extends Controller
     public function index()
     {
         $data = DB::table('master_gangguan')->get();
+        $pelanggan = DB::table('master_pelanggan')->get();
 
         $tiket = DB::table('master_tiket')->select('id')->orderBy('id' ,'DESC')->first();
         if($tiket != NULL)
@@ -45,7 +47,7 @@ class HelpdeskController extends Controller
 
         }
 
-        return view('helpdesk.index', compact('data', 'no_gangguan'));
+        return view('helpdesk.index', compact('data', 'no_gangguan', 'pelanggan'));
     }
 
     public function master_helpdesk()
@@ -53,6 +55,13 @@ class HelpdeskController extends Controller
         $data = DB::table('master_tiket')->get();
 
         return view('helpdesk.master', compact('data'));
+    }
+
+    public function master_pelanggan()
+    {
+        $data = DB::table('master_pelanggan')->get();
+
+        return view('helpdesk.master_pelanggan', compact('data'));
     }
 
     /**
@@ -63,7 +72,6 @@ class HelpdeskController extends Controller
      */
     public function store(Request $request)
     {
-// dd($request->all());
         Storage::disk('public')->put($request->no_gangguan.'.png',base64_decode(DNS2D::getBarcodePNG($request->no_gangguan, "QRCODE")));
         
         MasterHelpdeskModel::create([
@@ -132,7 +140,49 @@ class HelpdeskController extends Controller
                $kode_gangguan
             ],
        ]);
+    }
 
+    public function update_pelanggan(Request $request)
+    {
+        // dd($request->all());
+        DB::table('master_pelanggan')->where('id', $request->id)
+        ->update([
+            'id_pelanggan' => $request->id_pelanggan,
+            'nama' => $request->nama_pelanggan,
+            'alamat' => $request->alamat,
+            'titik_ap' => $request->titik_ap,
+            'titik_ont' => $request->titik_ont,
+            'sn_ap' => $request->sn_ap,
+            'sn_ont' => $request->sn_ont,
+            'lokasi' => $request->kordinat_pelanggan,
+        ]);
+        Session::flash('info', 'Data Berhasil Di Update..');
+        return back();
+    }
+
+    public function import_pelanggan(Request $request)
+    {
+        $excel = $request->file('file');
+        $data = Excel::import(new ImportPelanggan, $excel);
+        Session::flash('info', 'Data Berhasil Di Import..');
+        return back();
+    }
+    
+    public function hapus_pelanggan($id)
+    {
+        DB::table('master_pelanggan')->where('id', $id)->delete();
+        Session::flash('info', 'Data Berhasil Di Hapus..');
+        return back();
+    }
+
+    public function detail_pelanggan($id)
+    {
+       $data =  DB::table('master_pelanggan')->where('id', $id)->first();
+
+       return response()->json([
+           'status' => 1,
+           'data' => $data
+       ]);
     }
 
     /**

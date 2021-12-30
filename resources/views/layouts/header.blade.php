@@ -120,6 +120,14 @@
                                         <span class="menu-text">Master Helpdesk</span>
                                     </a>
                                 </li>
+                                <li class="menu-item" aria-haspopup="true">
+                                    <a href="{{ url('helpdesk/master_pelanggan') }}" class="menu-link">
+                                        <i class="menu-bullet menu-bullet-line">
+                                            <span></span>
+                                        </i>
+                                        <span class="menu-text">Master Pelanggan</span>
+                                    </a>
+                                </li>
                                 @endif
                             </ul>
                         </div>

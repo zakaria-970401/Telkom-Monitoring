@@ -34,11 +34,16 @@ Route::group(['middleware' => ['auth', 'rules']], function () {
 
       //HELPDESK  //
     Route::prefix('helpdesk/')->group(function() {
-        Route::get('create_tiket  ', 'HelpdeskController@index');
-        Route::post('create_tiket  ', 'HelpdeskController@store');
-        Route::get('master_helpdesk  ', 'HelpdeskController@master_helpdesk');
-        Route::get('detail_tiket/{no_gangguan}  ', 'HelpdeskController@detail_tiket');
+        Route::get('create_tiket', 'HelpdeskController@index');
+        Route::post('create_tiket', 'HelpdeskController@store');
+        Route::post('import_pelanggan', 'HelpdeskController@import_pelanggan');
+        Route::get('master_helpdesk', 'HelpdeskController@master_helpdesk');
+        Route::get('hapus_pelanggan/{id}', 'HelpdeskController@hapus_pelanggan');
+        Route::get('master_pelanggan', 'HelpdeskController@master_pelanggan');
+        Route::get('detail_tiket/{no_gangguan}', 'HelpdeskController@detail_tiket');
+        Route::get('detail_pelanggan/{id}', 'HelpdeskController@detail_pelanggan');
         Route::PATCH('update_tiket', 'HelpdeskController@update_tiket');
+        Route::post('update_pelanggan', 'HelpdeskController@update_pelanggan');
         Route::get('hapus_tiket/{no_gangguan}', 'HelpdeskController@hapus_tiket');
     });
 
